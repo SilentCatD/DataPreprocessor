@@ -326,7 +326,7 @@ class DataPreprocessor:
             csv_writer.writerows(new_data)
 
     @staticmethod
-    def _do_calc_sub(operand_a, operand_b, name):
+    def do_calc_sub(operand_a, operand_b, name):
         if name == '+':
             return operand_a + operand_b
         elif name == '-':
@@ -337,7 +337,7 @@ class DataPreprocessor:
             return operand_a / operand_b
 
     @staticmethod
-    def _do_calc(operations, data):
+    def do_calc(operations, data):
         to_cal = []
         for item in operations:
             if type_of(item) == EquationType.OPERATOR:
@@ -346,12 +346,15 @@ class DataPreprocessor:
                 try:
                     if data[item] == '':
                         return ''
-                    to_cal.append(float(data[item]))
+                    try:
+                        to_cal.append(float(data[item]))
+                    except ValueError:
+                        raise (f"Data type is not {DataType.NUMERIC.name}")
                 except KeyError as e:
                     raise AttributeError("No such attribute") from e
         for index, item in enumerate(to_cal):
             if type_of(item) == EquationType.OPERATOR:
-                to_cal[index] = DataPreprocessor._do_calc_sub(to_cal[index - 2], to_cal[index - 1], to_cal[index])
+                to_cal[index] = DataPreprocessor.do_calc_sub(to_cal[index - 2], to_cal[index - 1], to_cal[index])
         return to_cal[-1]
 
     def attributes_calculation(self, calc_str, col_name, file_name: str = None):
@@ -367,7 +370,7 @@ class DataPreprocessor:
             fieldnames.append(col_name)
             for csv_row in csv_reader:
                 row = dict(csv_row)
-                row[col_name] = DataPreprocessor._do_calc(operations, row)
+                row[col_name] = DataPreprocessor.do_calc(operations, row)
                 new_data.append(row)
 
         with open(file_name, 'w', newline='', encoding='utf-8') as csv_file:
@@ -378,4 +381,4 @@ class DataPreprocessor:
 
 if __name__ == '__main__':
     house_data = DataPreprocessor('house-prices.csv')
-    house_data.attributes_calculation("a+b", "sup")
+    house_data.attributes_calculation("MSSubClass+LotFrontage", col_name="Mutitest", file_name="test.csv")
