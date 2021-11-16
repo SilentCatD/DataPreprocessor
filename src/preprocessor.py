@@ -8,7 +8,12 @@ from xfix import EquationType, infix_to_postfix, type_of
 
 class FillType(Enum):
     """
-    Enum class define 3 main method of data fill: Mean, mode, and median
+    Enum class define 3 main method of data fill
+
+    ----
+
+    These method will be used as data type to choose whether to fill a specific missing data with which method: mean,
+    max, or median
     """
     MEAN = 0
     MEDIAN = 1
@@ -17,7 +22,11 @@ class FillType(Enum):
 
 class NormalizationType(Enum):
     """
-    Enum class define 2 main type of normalization: min-max, z-score
+    Enum class define main types of normalization
+
+    ----
+
+    Min-max standardization or Z-score normalization to choose in normalizing a specific attribute
     """
     MIN_MAX = 0
     Z_SCORE = 1
@@ -26,6 +35,13 @@ class NormalizationType(Enum):
 class DataType(Enum):
     """
     Enum class define data type of each attribute
+
+    ----
+
+    Each attributes may belong to a specific type as defined here, those are:
+        - NUMERIC for float value and such, can be used in mathematics expression
+        - CATEGORICAL for named value, can't be calculated on
+        - UNKNOWN for data type does not belong to above type
     """
     NUMERIC = 0
     CATEGORICAL = 1
@@ -42,6 +58,11 @@ class DataPreprocessor:
         """
         Class constructor
 
+        ----
+
+        Input file name will be checked to see if such file truly exist, error will then be raise accordingly, the
+        delimiter will be used in opening data file
+
         :param file: name of the data file
         :param delimiter: delimiter of each value in the file
         :raise: FileNotFoundError if the specified file is not available
@@ -55,6 +76,11 @@ class DataPreprocessor:
     def missing_cols(self) -> Dict[str, list]:
         """
         Function to determine attributes with missing values
+
+        ----
+
+        Open data file and loop through each rows, each cols to count and store information about missing columns,
+        if a value is missing, attribute name of that value and list of missing rows numbers will be recorded
 
         :return: a dictionary which hold key-value pair:
                 key: name of the attribute has missing value
@@ -77,6 +103,12 @@ class DataPreprocessor:
         """
         Function to determine attributes with missing values
 
+        ----
+
+        Open data file and loop through each rows, each cols to count and store information about missing rows
+
+        |  If a value appear to be missing, the rows index and list of missing attribute will be recorded
+
          :return: a dictionary which hold key-value pair:
                 key: row index of rows which has missing value, row index start at 0 and exclude fieldnames row
                 value: list of attributes which is missing from this row
@@ -98,6 +130,14 @@ class DataPreprocessor:
         """
         Determine the data type of a given attribute
 
+        ----
+
+        Loop through each attributes to deter it's type, utilize python value parse to see if that value can be parse
+        into number or not.
+
+        |  Though this only operate on attributes that has at least one value, attributes with no data
+        will be determined as UnknownType
+
         :param attribute: name of the attribute
         :return: data type of this attribute
         :raise: Attribute error if there's no attribute with the given name
@@ -118,13 +158,25 @@ class DataPreprocessor:
                     raise AttributeError(f"No such attribute: {attribute}") from e
         return DataType.UNKNOWN
 
-    def _standard_deviation(self, attribute: str) -> float:
+    def _standard_deviation(self, attribute: str) -> Optional[float]:
         """
         Function to calculate a standard deviation of a given attribute in a whole file, this will skip empty value
 
+        ----
+
+        Only operate on NUMERIC data type, return None if data type is not of this type
+
+        |  Open the file and gather all value of given attribute to calculate standard deviation
+
         :param attribute: name of the NUMERIC attribute
-        :return: standard deviation value of this attribute
+        :return:
+            float: standard deviation value of this attribute,
+            None: if data type is not NUMERIC
         """
+
+        if self._deter_data_type(attribute) != DataType.NUMERIC:
+            return None
+
         mean = self._mean(attribute)
         total = 0.0
         has_value = 0
@@ -136,7 +188,7 @@ class DataPreprocessor:
                     has_value += 1
                     total += math.pow(float(row[attribute]) - mean, 2)
 
-        if has_value == 1:
+        if has_value < 2:
             return 0
         return math.sqrt(total / (has_value - 1))
 
@@ -144,9 +196,15 @@ class DataPreprocessor:
         """
         Function to calculate the mean of a given attribute, this will skip empty value
 
+        ----
+
+        Only operate on NUMERIC data type, return None if data type is not of this type
+
+        |  Open the file and gather all value of given attribute to calculate mean
+
         :param attribute: name of the attribute
         :return:
-                float: mean of the NUMERIC numeric attribute
+                float: mean of the NUMERIC numeric attribute,
                 None: if the attribute is not numeric
         """
         if self._deter_data_type(attribute) != DataType.NUMERIC:
@@ -166,9 +224,15 @@ class DataPreprocessor:
         """
         Function to calculate median of a given attribute, this will skip missing value
 
+        ----
+
+        Only operate on NUMERIC data type, return None if data type is not of this type
+
+        |  Open the file and gather all value of given attribute to calculate median
+
         :param attribute: name of the NUMERIC attribute
         :return:
-                float: value of the median of this attribute
+                float: value of the median of this attribute,
                 None: if this attribute is not NUMERIC
         """
         if self._deter_data_type(attribute) != DataType.NUMERIC:
@@ -186,9 +250,16 @@ class DataPreprocessor:
     def _mode(self, attribute: str) -> Optional[AnyStr]:
         """
         Function to calculate mode of a given attribute
+
+        ----
+
+        Only operate on data type different than UNKNOWN, return None if not this type
+
+        |  Open the file and gather all value of given attribute to calculate mode
+
         :param attribute: name of the attribute
         :return:
-                str: value of the mode of this attribute
+                str: value of the mode of this attribute,
                 None: if the attribute has all empty rows
         """
         if self._deter_data_type(attribute) == DataType.UNKNOWN:
@@ -210,10 +281,16 @@ class DataPreprocessor:
         """
         Function to generate a part of a lookup-table which hold value of missing attribute to avoid re-calculation
 
+        ----
+
+        Construct a lookup table for fill_nan function
+
+        |  This lookup table will store value of mean, median, mode for NUMERIC value and mode for CATEGORICAL value
+
         :param attribute: name of this attribute
         :param fall_back: default value to fill if this attribute can't be calculated with: mean, mode, median
         :return:
-                mean, mode, median for attribute of type NUMERIC
+                mean, mode, median for attribute of type NUMERIC,
                 mode for attribute of type CATEGORICAL
         """
         attr_type = self._deter_data_type(attribute)
@@ -234,9 +311,15 @@ class DataPreprocessor:
         """
         Function to calculate value of z-score normalization on a given NUMERIC attribute
 
+        ----
+
+        Open the file to gather all data in it and add that data to a new data set
+
+        |  This new data set will then be re-scaled with calculated mean and standard deviation
+
         :param attribute: name of the attribute
         :return:
-                list: of a new data after calculation
+                list: of a new data after calculation,
                 list: fieldnames of this new data
         """
         new_data = []
@@ -257,6 +340,12 @@ class DataPreprocessor:
     def _min_max(self, attribute: str) -> Tuple[List[Dict], List]:
         """
         Function to calculate value of min-max normalization on a given NUMERIC attribute
+
+        ----
+
+        Open the file to gather all data in it and add that data to a new data set
+
+        |  This new data set will then be re-scaled with  mean-max normalization method
 
         :param attribute: name of the attribute
         :return:
@@ -292,10 +381,19 @@ class DataPreprocessor:
         """
         Function to perform data fill with the specified FillType
 
-        :param numeric_fill: option to fill NUMERIC data, this may be mode, mean, and median
+        ----
+
+        Open the file to gather it's data and treat missing data with specified FillType
+
+        | To avoid repeated re-calculation each time a missing value is encountered, a look-up table will be constructed
+
+        |  Filled data will be stored in a new data set and get saved with specified file name, if not specified, this
+        new data will overwritten old data in old data file
+
+        :param numeric_fill: option to fill NUMERIC data, this may be mode, mean, and median,
                              categorical data will always fill by mode
         :param fall_back: default data to put into cell if this fill operation failed
-        :param file_name: name of the file to save this data, if not specified, the data will be saved on the old file
+        :param file_name: name of the file to save this data
         """
         attribute_fill = {}
         filled_data = []
@@ -336,11 +434,20 @@ class DataPreprocessor:
         """
         Function deleting rows with missing values given a threshold
 
+        ----
+
+        Open the file to gather it's data and leave out rows that are not meet threshold condition
+
+        |  If the number of missing attribute of current row bigger than this value, it will be deleted
+
+        |  If threshold_pct is specified, the value in threshold will ne ignore.
+
+        |  Filled data will be stored in a new data set and get saved with specified file name, if not specified, this
+        new data will overwritten old data in old data file
+
         :param threshold: specified the limit that allow rows are kept from being deleted
-                          if the number of attribute of rows bigger than this value, it will be deleted
         :param threshold_pct: specifies the percentage base on number of attribute this file has
-                             if specified, the value in threshold will ne ignore.
-        :param file_name: name of the file to save this data, if not specified, the data will be saved on the old file
+        :param file_name: name of the file to save this data
         """
         missing_rows = self.missing_rows()
         new_data = []
@@ -373,11 +480,20 @@ class DataPreprocessor:
         """
         Function deleting attributes with missing rows, given a threshold
 
+        ----
+
+        Open the file to gather it's data and leave out attributes that are not meet threshold condition
+
+        |   If the number of missing rows of current attribute bigger than this value, it will be deleted
+
+        |  If threshold_pct is specified, the value in threshold will ne ignore.
+
+        |  Filled data will be stored in a new data set and get saved with specified file name, if not specified
+        this new data will overwritten old data in old data file
+
         :param threshold: specified the limit that allow attributes are kept from being deleted
-                          if the number of rows of attribute bigger than this value, it will be deleted
         :param threshold_pct: specifies the percentage base on number of rows this file has
-                             if specified, the value in threshold will ne ignore.
-        :param file_name: name of the file to save this data, if not specified, the data will be saved on the old file
+        :param file_name: name of the file to save this data
         """
         missing_cols = self.missing_cols()
         new_data = []
@@ -417,7 +533,13 @@ class DataPreprocessor:
         """
         Function to delete duplicated rows
 
-        :param file_name: name of the file to save this data, if not specified, the data will be saved on the old file
+        ----
+
+        Open file and gather all data, perform duplication removal and store new data into new file
+
+        |  If file name is not specified, the data will be saved on the old file
+
+        :param file_name: name of the file to save this data
         """
         fieldnames = []
         if not file_name:
@@ -436,9 +558,19 @@ class DataPreprocessor:
         """
         Function to perform normalization on a given NUMERIC attribute
 
+        ----
+
+        Only operate on NUMERIC data type and will raise error if the data type is different
+
+        |  Deter which normalization type is specified then call suitable function, the returned data will then be saved
+        to a new file
+
+        |  If the name of the new file is not specified, the data will be saved on the old file
+
         :param attribute: name of the attribute
         :param normalization_type: may be of type z-score or min-max
-        :param file_name: name of the file to save this data, if not specified, the data will be saved on the old file
+        :param file_name: name of the file to save this data
+        :raise: TypeError if data type of given attribute is not NUMERIC
         """
         if not file_name:
             file_name = self._file
@@ -513,9 +645,18 @@ class DataPreprocessor:
         """
         Function that do attribute calculation given an in-fix expression representation
 
+        ----
+
+        Open file to gather data, at each row, new column will be added which hold the results of calculated expression,
+        then the new data, with an extra column will be saved to a new file
+
+        |  If col name is not specified, it will be set to be the calc_str value
+
+        | if file name is not specified ,the data will be saved on the old file
+
         :param calc_str: infix form of operation calculation
-        :param col_name: name of the new column to output result, if not specified, will be set to be the calc_str value
-        :param file_name:  name of the file to save this data, if not specified, the data will be saved on the old file
+        :param col_name: name of the new column to output result
+        :param file_name:  name of the file to save this data
         """
         operations = infix_to_postfix(calc_str)
         new_data = []
