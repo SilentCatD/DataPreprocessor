@@ -1,27 +1,73 @@
+from typing import *
+
+
 class Stack:
-    def __init__(self, items=None):
+    """
+    A simple implementation of Stack data structure
+    """
+
+    def __init__(self, items: list = None) -> None:
+
+        """
+        Class constructor
+
+        :param items:  a 1D iterable, the items of this iterable will be initialize in the stack, if not specified,
+                    the stack will be empty
+        """
         self._item = []
         if items:
             self._item = [item for item in items]
 
-    def push(self, item):
+    def push(self, item: Any) -> None:
+        """
+        Push item into the top of the stack
+
+        :param item: item to push
+        """
         self._item.append(item)
 
-    def pop(self):
+    def pop(self) -> Optional[Any]:
+        """
+        Pop item from the top of the stack an return it, this remove the top most item in the stack
+
+        :return:
+            Top most <item> of the stack if stack is not empty
+            <None> if stack is empty
+        """
         if not self.is_empty():
             return self._item.pop()
         return None
 
-    def is_empty(self):
+    def is_empty(self) -> int:
+        """
+        Determine whether the stack is empty or not
+
+        :return: <boolean> value represent if the stack is empty
+        """
         return len(self._item) == 0
 
-    def size(self):
+    def size(self) -> int:
+        """
+        Determine the size of the stack
+
+        :return: <int> value represent the size of the stack
+        """
         return len(self._item)
 
-    def top(self):
+    def top(self) -> Any:
+        """
+        Get the top most item of the stack then return it, this does not affect items in the stack
+
+        :return: Top most <item> of the stack
+        """
         if not self.is_empty():
             return self._item[-1]
         return None
 
-    def items(self):
+    def items(self) -> List:
+        """
+        Get the copy of the current stack items
+
+        :return: <List> copy of all <item> in stack
+        """
         return self._item[:]

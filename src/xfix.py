@@ -1,14 +1,22 @@
 import re
 from stack import Stack
 from enum import Enum
+from typing import *
 
 
 class EquationType(Enum):
+    """
+    Enum class define the type of string in an operation
+    This class define 4 level of type of each string will be
+
+    """
     LEFT_PARENTHESES = 0
     RIGHT_PARENTHESES = 1
     OPERATOR = 2
     OPERAND = 3
 
+
+# define operator dictionary to look up
 
 operator = {
     "+": {
@@ -38,7 +46,13 @@ operator = {
 }
 
 
-def parse_infix(infix_seq):
+def parse_infix(infix_seq: str) -> List:
+    """
+    Function to split a string of expression to separate operand and operator, currently only works on +, - , *, /, (, )
+
+    :param infix_seq: an operation expression, contain equation which need to be split
+    :return: split items
+    """
     r = re.compile(r'(?<=[-+*/\\(\\)])|(?=[-+*/\\(\\)])')
     redundancies = ['', ' ']
     items = r.split(infix_seq)
@@ -47,7 +61,13 @@ def parse_infix(infix_seq):
     return items
 
 
-def type_of(op_str):
+def type_of(op_str: str) -> EquationType:
+    """
+    Function to determine which type of EquationType of this string
+
+    :param op_str: input string to determine type
+    :return: defined type of this string
+    """
     if op_str == '(':
         return EquationType.LEFT_PARENTHESES
     elif op_str == ')':
@@ -58,7 +78,14 @@ def type_of(op_str):
         return EquationType.OPERAND
 
 
-def infix_to_postfix(infix_seq):
+def infix_to_postfix(infix_seq: str) -> List:
+    """
+    Turn a math expression to post-fix convention
+    Only support +, -, *, / , (, ) at the moment
+
+    :param infix_seq: input expression
+    :return: a list of element follow the post-fix convention
+    """
     infix_stack = parse_infix(infix_seq)
     output_stack = Stack()
     operator_stack = Stack()
@@ -79,19 +106,3 @@ def infix_to_postfix(infix_seq):
     while not operator_stack.is_empty():
         output_stack.push(operator_stack.pop())
     return output_stack.items()
-
-
-def operate(operand_a, operand_b, name):
-    if name == '+':
-        return operand_a + operand_b
-    elif name == '-':
-        return operand_a - operand_b
-    elif name == '*':
-        return operand_a * operand_b
-    elif name == '/':
-        return operand_a / operand_b
-
-
-
-
-# result = calculate(infix_to_postfix(string), data_dict)
