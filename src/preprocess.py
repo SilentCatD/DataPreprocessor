@@ -1,16 +1,15 @@
-import json
-import sys
-import os
 from tabulate import tabulate
 from lib.preprocessor import DataPreprocessor, FillType
 import argparse
 
 
 def undefined(_):
+    """ Handle undefined CLI interaction """
     print("run the program again with -h flag for more information")
 
 
 def list_func(list_args):
+    """ Handle list info interaction """
     processor = DataPreprocessor(list_args.file)
     if list_args.missing:
         table = []
@@ -32,6 +31,7 @@ def list_func(list_args):
 
 
 def fill_na_func(fill_args):
+    """Handle fill N/A CLI interaction"""
     processor = DataPreprocessor(fill_args.file)
     if fill_args.outfile:
         if not fill_args.outfile.endswith('.csv'):
@@ -51,6 +51,7 @@ def fill_na_func(fill_args):
 
 
 def delete_duplicate(deldup_args):
+    """Handle delete duplicate data CLI interaction"""
     print(vars(deldup_args))
     processor = DataPreprocessor(deldup_args.file)
     if deldup_args.outfile:
@@ -92,7 +93,7 @@ if __name__ == '__main__':
     fill_parser.add_argument("-ft", '--filltype',
                              help="set the fill type for NUMERIC value, must be one of [mean, median]", required=True,
                              choices=["mean", "median"], metavar='')
-    fill_parser.add_argument("-fb", "--fallback", help="Set fallback value if fill failed, default value will be '0'",
+    fill_parser.add_argument("-fb", "--fallback", help="set fallback value if fill failed, default value will be '0'",
                              metavar='', default='0')
     fill_parser.add_argument("-o", "--outfile",
                              help="set the name of the output file, if not specified, the current file will be "
@@ -105,7 +106,7 @@ if __name__ == '__main__':
     # delete duplicate: 6
     delete_duplicate_parser = sub_parsers.add_parser("deldup", help="delete duplicate data")
     delete_duplicate_parser.add_argument('-t', '--type', choices=['row'],
-                                         help='Choose the type of duplicate deletion, must be one of ["rows"]',
+                                         help='choose the type of duplicate deletion, must be one of ["rows"]',
                                          metavar='', required=True)
     delete_duplicate_parser.add_argument("-o", "--outfile",
                                          help="set the name of the output file, if not specified, the current file "
