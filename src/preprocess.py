@@ -1,3 +1,4 @@
+import json
 import sys
 import os
 from tabulate import tabulate
@@ -66,7 +67,7 @@ def delete_duplicate(deldup_args):
 
 
 if __name__ == '__main__':
-    """Entry point to interact with the commandline arguments"""
+    """Entry point to interact with the processor class, handle CLI"""
 
     # Main parser, do general stuff
     main_parser = argparse.ArgumentParser(description="Simple program to do csv file pre-processing",
@@ -111,7 +112,7 @@ if __name__ == '__main__':
     delete_duplicate_parser.set_defaults(func=delete_duplicate)
     # standardization: 7
 
-    # attribute calc
+    # attribute calc: 8
 
     # run the parser
     args = main_parser.parse_args()
