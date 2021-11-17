@@ -31,7 +31,22 @@ def list_func(list_args):
 
 
 def fill_na_func(fill_args):
-    print(vars(fill_args))
+    processor = DataPreprocessor(fill_args.file)
+    if fill_args.outfile:
+        if not fill_args.outfile.endswith('.csv'):
+            raise NameError("output filename must end with '.csv'")
+    if fill_args.filltype == 'mean':
+        fill_type = FillType.MEAN
+        print("mean")
+    else:
+        fill_type = FillType.MEDIAN
+    print(f"filling N/A value with {fill_type.name}...")
+    processor.fill_nan(numeric_fill=fill_type, fall_back=fill_args.fallback, file_name=fill_args.outfile)
+    if fill_args.outfile:
+        print(f"Saved to {fill_args.outfile}")
+    else:
+        print(f"Saved to {fill_args.file}")
+    print("done!")
 
 
 if __name__ == '__main__':
@@ -57,8 +72,21 @@ if __name__ == '__main__':
     fill_parser.add_argument("-ft", '--filltype',
                              help="Set the fill type for NUMERIC value, must be one of [mean, median]", required=True,
                              choices=["mean", "median"], metavar='')
-    fill_parser.add_argument("-fb", "--fallback", help="Set fallback value if fill failed")
+    fill_parser.add_argument("-fb", "--fallback", help="Set fallback value if fill failed, default value will be 0",
+                             metavar='', default='0')
+    fill_parser.add_argument("-o", "--outfile",
+                             help="Set the name of the output file, if not specified, the current file will be "
+                                  "overwritten", metavar='')
     fill_parser.set_defaults(func=fill_na_func)
+
+    # delete with threshold: 4, 5
+
+    # delete duplicate: 6
+
+    # standardization: 7
+
+    # attribute calc
+
     # run the parser
     args = main_parser.parse_args()
     args.func(args)
