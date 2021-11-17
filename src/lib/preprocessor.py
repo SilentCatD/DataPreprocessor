@@ -2,8 +2,8 @@ import math
 import os
 import csv
 from enum import Enum
-from typing import *
-from xfix import EquationType, infix_to_postfix, type_of
+from typing import Dict, List, AnyStr, Optional, Any, Tuple
+from .xfix import EquationType, infix_to_postfix, type_of
 
 
 class FillType(Enum):
@@ -125,6 +125,22 @@ class DataPreprocessor:
                         else:
                             missing_rows[row_number] = [attribute]
         return missing_rows
+
+    def missing_attributes(self) -> List[AnyStr]:
+        """
+        Getter to get the missing attributes
+
+        :return: list of attributes with missing value
+        """
+        return list(self.missing_cols().keys())
+
+    def count_missing_rows(self) -> int:
+        """
+        Getter to count the missing rows
+
+        :return: the number of rows with missing value
+        """
+        return len(self.missing_rows().keys())
 
     def _deter_data_type(self, attribute: str) -> DataType:
         """

@@ -1,7 +1,7 @@
 import re
-from stack import Stack
 from enum import Enum
-from typing import *
+from typing import List
+from .stack import Stack
 
 
 class EquationType(Enum):

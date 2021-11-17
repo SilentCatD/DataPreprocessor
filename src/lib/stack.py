@@ -1,4 +1,4 @@
-from typing import *
+from typing import Any, Optional, List
 
 
 class Stack:
