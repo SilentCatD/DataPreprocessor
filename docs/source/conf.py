@@ -43,6 +43,14 @@ exclude_patterns = []
 
 
 # -- Options for HTML output -------------------------------------------------
+autodoc_default_options = {     
+    "members": True,     
+    "undoc-members": True,     
+    "private-members": True,
+    "special-members": "__init__",
+    "exclude-members": "__weakref__",
+    "member-order": "bysource",
+    }
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
