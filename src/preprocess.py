@@ -102,6 +102,7 @@ if __name__ == '__main__':
 
     # add subparsers
     sub_parsers = main_parser.add_subparsers(help="use %(prog)s <option> -h to see usage of each option", )
+
     # show info about rows and cols: 1, 2
     list_parser = sub_parsers.add_parser("list",
                                          help="list the information about data such as missing cols, missing rows,...")
@@ -153,6 +154,7 @@ if __name__ == '__main__':
                                          help="set the name of the output file, if not specified, the current file "
                                               "will be overwritten", metavar='')
     delete_duplicate_parser.set_defaults(func=delete_duplicate)
+
     # standardization: 7
     # TODO
 
