@@ -484,7 +484,7 @@ class DataPreprocessor:
             csv_reader = csv.DictReader(csv_file, delimiter=self._delimiter)
             fieldnames.extend(csv_reader.fieldnames)
             for row_number, csv_row in enumerate(csv_reader):
-                if row_number in missing_rows and len(missing_rows[row_number]) > threshold:
+                if row_number in missing_rows and len(missing_rows[row_number]) >= threshold:
                     continue
                 new_data.append(csv_row)
 
@@ -526,6 +526,7 @@ class DataPreprocessor:
                     csv_reader = csv.DictReader(csv_file, delimiter=self._delimiter)
                     row_count = sum(1 for _ in csv_reader)
                     threshold = int(row_count * threshold_pct)
+                    print(f"threshold is: {threshold}")
 
         with open(self._file, 'r') as csv_file:
             csv_reader = csv.DictReader(csv_file, delimiter=self._delimiter)
@@ -533,7 +534,7 @@ class DataPreprocessor:
                 row = dict(csv_row)
                 data = {}
                 for attribute in row:
-                    if attribute in missing_cols and len(missing_cols[attribute]) > threshold:
+                    if attribute in missing_cols and len(missing_cols[attribute]) >= threshold:
                         continue
                     if attribute not in fieldnames:
                         fieldnames.append(attribute)

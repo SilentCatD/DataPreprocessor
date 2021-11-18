@@ -9,7 +9,7 @@ def undefined(_):
 
 
 def list_func(list_args):
-    """ Handle list info interaction """
+    """ Handle list info CLI interaction """
     processor = DataPreprocessor(list_args.file)
     if list_args.missing:
         table = []
@@ -52,7 +52,6 @@ def fill_na_func(fill_args):
 
 def delete_duplicate(deldup_args):
     """Handle delete duplicate data CLI interaction"""
-    print(vars(deldup_args))
     processor = DataPreprocessor(deldup_args.file)
     if deldup_args.outfile:
         if not deldup_args.outfile.endswith('.csv'):
@@ -64,6 +63,29 @@ def delete_duplicate(deldup_args):
         print(f"Saved to {deldup_args.outfile}")
     else:
         print(f"Saved to {deldup_args.file}")
+    print("done!")
+
+
+def delete_with_threshold(delthres_args):
+    """ Handle delete with threshold CLI interaction"""
+    processor = DataPreprocessor(delthres_args.file)
+    if delthres_args.outfile:
+        if not delthres_args.outfile.endswith('.csv'):
+            raise NameError("output filename must end with '.csv'")
+    if delthres_args.type == 'row':
+        print("deleting missing rows with a given threshold...")
+        processor.delete_missing_row(threshold=delthres_args.threshold_int,
+                                     threshold_pct=delthres_args.threshold_percentage,
+                                     file_name=delthres_args.outfile)
+    elif delthres_args.type == 'col':
+        print("deleting missing attributes with a given threshold...")
+        processor.delete_missing_column(threshold=delthres_args.threshold_int,
+                                        threshold_pct=delthres_args.threshold_percentage,
+                                        file_name=delthres_args.outfile)
+    if delthres_args.outfile:
+        print(f"Saved to {delthres_args.outfile}")
+    else:
+        print(f"Saved to {delthres_args.file}")
     print("done!")
 
 
@@ -101,7 +123,26 @@ if __name__ == '__main__':
     fill_parser.set_defaults(func=fill_na_func)
 
     # delete with threshold: 4, 5
-    # TODO
+    delete_with_threshold_parser = sub_parsers.add_parser('delthres',
+                                                          help="delete missing rows or columns given a threshold")
+    delete_with_threshold_parser.add_argument('-t', '--type', choices=['row', 'col'],
+                                              help='type of deletion to performed, on attributes (col) or rows (row),'
+                                                   ' must be one of ["row", "col"]',
+                                              required=True, metavar='')
+    delete_with_threshold_parser.add_argument("-o", "--outfile",
+                                              help="set the name of the output file, if not specified, the current "
+                                                   "file will be overwritten", metavar='')
+    delete_with_threshold_parser.add_argument('-ti', '--threshold-int', type=int, default=1,
+                                              help="threshold to delete using count, "
+                                                   "if missing rows or cols is bigger than this threshold, "
+                                                   "it will be deleted, default to 1 ", metavar='')
+    delete_with_threshold_parser.add_argument('-tp', '--threshold-percentage', type=float,
+                                              help="threshold to delete using percentage, "
+                                                   "if missing rows or cols is bigger than this threshold, "
+                                                   "it will be deleted, threshold-int will be ignored if this is set, "
+                                                   "the float value must be between 0-1",
+                                              metavar='')
+    delete_with_threshold_parser.set_defaults(func=delete_with_threshold)
 
     # delete duplicate: 6
     delete_duplicate_parser = sub_parsers.add_parser("deldup", help="delete duplicate data")
