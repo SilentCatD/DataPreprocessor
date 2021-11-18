@@ -1,5 +1,5 @@
 from tabulate import tabulate
-from lib.preprocessor import DataPreprocessor, FillType
+from lib.preprocessor import DataPreprocessor, FillType, NormalizationType
 import argparse
 
 
@@ -89,6 +89,29 @@ def delete_with_threshold(delthres_args):
     print("done!")
 
 
+def normalization(norm_args):
+    """ Handle normalization on a NUMERIC attribute CLI interaction"""
+    processor = DataPreprocessor(norm_args.file)
+    if norm_args.outfile:
+        if not norm_args.outfile.endswith('.csv'):
+            raise NameError("output filename must end with '.csv'")
+    if norm_args.type == 'min-max':
+        print("performing min-max normalization...")
+        processor.normalization(attribute=norm_args.attribute, normalization_type=NormalizationType.MIN_MAX,
+                                file_name=norm_args.outfile)
+
+    elif norm_args.type == 'z-score':
+        print("performing z-score normalization...")
+        processor.normalization(attribute=norm_args.attribute, normalization_type=NormalizationType.Z_SCORE,
+                                file_name=norm_args.outfile)
+
+    if norm_args.outfile:
+        print(f"Saved to {norm_args.outfile}")
+    else:
+        print(f"Saved to {norm_args.file}")
+    print("done!")
+
+
 if __name__ == '__main__':
     """Entry point to interact with the processor class, handle CLI"""
 
@@ -155,9 +178,16 @@ if __name__ == '__main__':
                                               "will be overwritten", metavar='')
     delete_duplicate_parser.set_defaults(func=delete_duplicate)
 
-    # standardization: 7
-    # TODO
-
+    # normalization: 7
+    norm_parser = sub_parsers.add_parser('norm', help="perform normalization on a given NUMERIC attribute")
+    norm_parser.add_argument('-t', '--type', choices=['min-max', 'z-score'], required=True,
+                             help="select the type of normalization, must be one of ['min-max', 'z-score']", metavar='')
+    norm_parser.add_argument('-a', '--attribute', required=True,
+                             help="name of a given NUMERIC attribute to perform normalization", metavar='')
+    norm_parser.add_argument("-o", "--outfile",
+                             help="set the name of the output file, if not specified, the current file "
+                                  "will be overwritten", metavar='')
+    norm_parser.set_defaults(func=normalization)
     # attribute calc: 8
     # TODO
 
