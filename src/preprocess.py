@@ -173,9 +173,6 @@ if __name__ == '__main__':
                                               help='type of deletion to performed, on attributes (col) or rows (row),'
                                                    ' must be one of ["row", "col"]',
                                               required=True, metavar='')
-    delete_with_threshold_parser.add_argument("-o", "--outfile",
-                                              help="set the name of the output file, if not specified, the current "
-                                                   "file will be overwritten", metavar='')
     delete_with_threshold_parser.add_argument('-ti', '--threshold-int', type=int, default=1,
                                               help="threshold to delete using count, "
                                                    "if missing rows or cols is bigger than this threshold, "
@@ -186,6 +183,9 @@ if __name__ == '__main__':
                                                    "it will be deleted, threshold-int will be ignored if this is set, "
                                                    "the float value must be between 0-1",
                                               metavar='')
+    delete_with_threshold_parser.add_argument("-o", "--outfile",
+                                              help="set the name of the output file, if not specified, the current "
+                                                   "file will be overwritten", metavar='')
     delete_with_threshold_parser.set_defaults(func=delete_with_threshold)
 
     # delete duplicate: 6
