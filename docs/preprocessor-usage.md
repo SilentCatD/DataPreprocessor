@@ -98,3 +98,15 @@ Xóa những dòng thiếu từ 80% giá trị thuộc tính và lưu kết qu�
 python3 preprocess.py -f ../data/house-prices.csv delthres -t row -tp 0.8 -o del_row_pct.csv
 ```
 ### Xóa các cột dữ liệu với ngưỡng cho trước
+Xóa những cột thiếu 500 giá trị dòng và lưu kết quả vào `del_col_int.csv`
+```
+python3 preprocess.py -f ../data/house-prices.csv delthres -t col -ti 500 -o del_col_int.csv
+```
+Xóa những cột thiếu từ 80% giá trị dòng và lưu kết quả vào `del_col_pct.csv`
+```
+python3 preprocess.py -f ../data/house-prices.csv delthres -t col -tp 0.8 -o del_col_pct.csv
+```
+### Xóa các dòng dữ liệu bị trùng
+```
+
+```
