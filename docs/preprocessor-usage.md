@@ -106,7 +106,74 @@ Xóa những cột thiếu từ 80% giá trị dòng và lưu kết quả vào `
 ```
 python3 preprocess.py -f ../data/house-prices.csv delthres -t col -tp 0.8 -o del_col_pct.csv
 ```
-### Xóa các dòng dữ liệu bị trùng
+## Xóa các dòng dữ liệu bị trùng
+```
+python3 preprocess.py deldup -h
+```
+```
+-t, --type  loại dữ liệu để xóa, hiện tại chỉ hỗ trợ xóa dòng nên chỉ có 1 giá trị row
+-o, --outfile file xuất ra
+```
+Xóa các dòng dữ liệu bị trùng và xuất ra deldup_file.csv
+```
+python3 preprocess.py -f ../data/house-prices.csv deldup -t row -o deldup_file.csv
+```
+## Chuẩn hóa thuộc tính
+```
+python3 preprocess.py norm -h
+```
+```
+-t , --type        loại chuẩn hóa, chọn 1 trong ['min-max', 'z-score']
+-a , --attribute   tên thuộc tính NUMERIC cần chuẩn hóa
+-o , --outfile     file đầu ra
+```
+### Chuẩn hóa thuộc tính theo min-max
+Chuẩn hóa thuộc tính LotFrontage và lưu vào norm_file.csv
+```
+python preprocess.py -f ../data/house-prices.csv norm -t min-max -a LotFrontage -o norm_file.csv
+```
+### Chuẩn hóa thuộc tính theo z-score
+Chuẩn hóa thuộc tính LotFrontage và lưu vào zscore_file.csv
+```
+python preprocess.py -f ../data/house-prices.csv norm -t z-score -a LotFrontage -o zscore_file.csv
+```
+## Tính toán thuộc tính
+Hiện tại chỉ hỗ trợ phép +, - , * , /
+```
+python3 preprocess.py -f ../data/house-prices.csv acalc -h
 ```
 
 ```
+-c , --calc-string phép tính
+-a , --attribute-name tên của thuộc tính mới để lưu kết quả
+-o , --outfile      tên file đầu ra
+```
+Phép tính hỗ trợ tính biểu thức toán nhiều thuộc tính, nhiều phép tính, miễn là tất cả các thuộc tính phải tồn tại, đều là thuộc tính NUMERIC và các phép tính chỉ bao gồm  +, - , * , /
+LotFrontage OverallQual OverallCond
+```
+ python3 preprocess.py -f ../data/house-prices.csv acalc -c '(LotFrontage - OverallQual) * OverallCond' -a test -o newattr.csv
+```
+Ví dụ 1 biểu thức tính toán
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
