@@ -114,17 +114,7 @@ def normalization(norm_args):
 
 def attribute_calculation(calc_args):
     """ Handle attributes calculations on a NUMERIC attribute CLI interaction"""
-    processor = DataPreprocessor(calc_args.file)
-    if calc_args.outfile:
-        if not calc_args.outfile.endswith('.csv'):
-            raise NameError("output filename must end with '.csv'")
-    processor.attributes_calculation(calc_str=calc_args.calc_string, col_name=calc_args.attribute_name,
-                                     file_name=calc_args.outfile)
-    if calc_args.outfile:
-        print(f"Saved to {calc_args.outfile}")
-    else:
-        print(f"Saved to {calc_args.file}")
-    print("done!")
+    pr
 
 
 if __name__ == '__main__':
@@ -217,7 +207,8 @@ if __name__ == '__main__':
                                                    help='perform attributes calculations on NUMERIC attributes')
     attribute_calc_parser.add_argument('-c', '--calc-string', required=True,
                                        help="operations to perform, must contain correct attribute names in the data, "
-                                            "only support + - * / ex: (atr1 + atr2) * atr3", metavar='')
+                                            "only support + - * /, calc_string must be inside '', "
+                                            "ex: '(atr1 + atr2) * atr3'", metavar='')
     attribute_calc_parser.add_argument('-a', '--attribute-name',
                                        help='name of the attribute to store calculations results, if not specified, '
                                             'the calc-string will be used as the new attribute\'s name', metavar='')
