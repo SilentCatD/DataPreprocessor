@@ -170,7 +170,6 @@ class DataPreprocessor:
                         except ValueError:
                             return DataType.CATEGORICAL
                 except KeyError as e:
-                    print('yes')
                     raise AttributeError(f"No such attribute: {attribute}") from e
         return DataType.UNKNOWN
 
@@ -526,7 +525,6 @@ class DataPreprocessor:
                     csv_reader = csv.DictReader(csv_file, delimiter=self._delimiter)
                     row_count = sum(1 for _ in csv_reader)
                     threshold = int(row_count * threshold_pct)
-                    print(f"threshold is: {threshold}")
 
         with open(self._file, 'r') as csv_file:
             csv_reader = csv.DictReader(csv_file, delimiter=self._delimiter)
@@ -614,6 +612,7 @@ class DataPreprocessor:
         :param operand_b: value 2
         :param name: of the expression, must be one of ['+', '-', '*', '/']
         :return: result of such operation
+        :raises: NotImplementedError if operation is not supported (not in +, - , * , /)
         """
         if name == '+':
             return operand_a + operand_b
@@ -626,6 +625,8 @@ class DataPreprocessor:
                 return operand_a / operand_b
             except ZeroDivisionError:
                 return None
+        else:
+            raise NotImplemented(f"Operation '{name}' not supported")
 
     @staticmethod
     def do_calc(operations: list, data: dict) -> Optional[float]:
@@ -635,7 +636,7 @@ class DataPreprocessor:
         :param operations: post-fix form of the operation expression
         :param data: key-value pair of attributes and their values in specified row
         :return:
-                float: value of this calculation
+                float: value of this calculation,
                 None: if one of values missing data
         :raise: Attribute error if no such attribute name in the data
         """
@@ -691,7 +692,7 @@ class DataPreprocessor:
             for csv_row in csv_reader:
                 row = dict(csv_row)
                 calc_result = DataPreprocessor.do_calc(operations, row)
-                if calc_result:
+                if calc_result is not None:
                     row[col_name] = calc_result
                 else:
                     row[col_name] = ''

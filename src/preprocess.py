@@ -112,6 +112,21 @@ def normalization(norm_args):
     print("done!")
 
 
+def attribute_calculation(calc_args):
+    """ Handle attributes calculations on a NUMERIC attribute CLI interaction"""
+    processor = DataPreprocessor(calc_args.file)
+    if calc_args.outfile:
+        if not calc_args.outfile.endswith('.csv'):
+            raise NameError("output filename must end with '.csv'")
+    processor.attributes_calculation(calc_str=calc_args.calc_string, col_name=calc_args.attribute_name,
+                                     file_name=calc_args.outfile)
+    if calc_args.outfile:
+        print(f"Saved to {calc_args.outfile}")
+    else:
+        print(f"Saved to {calc_args.file}")
+    print("done!")
+
+
 if __name__ == '__main__':
     """Entry point to interact with the processor class, handle CLI"""
 
@@ -127,6 +142,8 @@ if __name__ == '__main__':
     sub_parsers = main_parser.add_subparsers(help="use %(prog)s <option> -h to see usage of each option", )
 
     # show info about rows and cols: 1, 2
+    # missing_cols(self) -> Dict[str, list]
+    # count_missing_rows(self) -> int
     list_parser = sub_parsers.add_parser("list",
                                          help="list the information about data such as missing cols, missing rows,...")
     list_parser.add_argument('-mr', '--missing-rows', help="list missing rows", action='store_true')
@@ -135,6 +152,7 @@ if __name__ == '__main__':
     list_parser.set_defaults(func=list_func)
 
     # fill nan value: 3
+    # fill_nan(self, numeric_fill: FillType, fall_back: str = '0', file_name: str = None) -> None
     fill_parser = sub_parsers.add_parser("fill", help="fill the missing N/A value of the data with specified type")
     fill_parser.add_argument("-ft", '--filltype',
                              help="set the fill type for NUMERIC value, must be one of [mean, median]", required=True,
@@ -147,6 +165,8 @@ if __name__ == '__main__':
     fill_parser.set_defaults(func=fill_na_func)
 
     # delete with threshold: 4, 5
+    # delete_missing_column(self, threshold: int = 1, threshold_pct: float = None, file_name: str = None) -> None
+    # delete_missing_row(self, threshold: int = 1, threshold_pct: float = None, file_name: str = None) -> None
     delete_with_threshold_parser = sub_parsers.add_parser('delthres',
                                                           help="delete missing rows or columns given a threshold")
     delete_with_threshold_parser.add_argument('-t', '--type', choices=['row', 'col'],
@@ -169,6 +189,7 @@ if __name__ == '__main__':
     delete_with_threshold_parser.set_defaults(func=delete_with_threshold)
 
     # delete duplicate: 6
+    # delete_duplicate_row(self, file_name: str = None) -> None
     delete_duplicate_parser = sub_parsers.add_parser("deldup", help="delete duplicate data")
     delete_duplicate_parser.add_argument('-t', '--type', choices=['row'],
                                          help='choose the type of duplicate deletion, must be one of ["rows"]',
@@ -179,6 +200,7 @@ if __name__ == '__main__':
     delete_duplicate_parser.set_defaults(func=delete_duplicate)
 
     # normalization: 7
+    # normalization(self, attribute: str, normalization_type: NormalizationType, file_name: str = None) -> None
     norm_parser = sub_parsers.add_parser('norm', help="perform normalization on a given NUMERIC attribute")
     norm_parser.add_argument('-t', '--type', choices=['min-max', 'z-score'], required=True,
                              help="select the type of normalization, must be one of ['min-max', 'z-score']", metavar='')
@@ -188,8 +210,21 @@ if __name__ == '__main__':
                              help="set the name of the output file, if not specified, the current file "
                                   "will be overwritten", metavar='')
     norm_parser.set_defaults(func=normalization)
+
     # attribute calc: 8
-    # TODO
+    # attributes_calculation(self, calc_str: str, col_name: str = None, file_name: str = None) -> None
+    attribute_calc_parser = sub_parsers.add_parser('acalc',
+                                                   help='perform attributes calculations on NUMERIC attributes')
+    attribute_calc_parser.add_argument('-c', '--calc-string', required=True,
+                                       help="operations to perform, must contain correct attribute names in the data, "
+                                            "only support + - * / ex: (atr1 + atr2) * atr3", metavar='')
+    attribute_calc_parser.add_argument('-a', '--attribute-name',
+                                       help='name of the attribute to store calculations results, if not specified, '
+                                            'the calc-string will be used as the new attribute\'s name', metavar='')
+    attribute_calc_parser.add_argument("-o", "--outfile",
+                                       help="set the name of the output file, if not specified, the current file "
+                                            "will be overwritten", metavar='')
+    attribute_calc_parser.set_defaults(func=attribute_calculation)
 
     # run the parser
     args = main_parser.parse_args()
