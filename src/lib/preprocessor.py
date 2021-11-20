@@ -489,6 +489,7 @@ class DataPreprocessor:
 
         with open(file_name, 'w', newline='', encoding='utf-8') as csv_file:
             csv_writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+            csv_writer.writeheader()
             csv_writer.writerows(new_data)
 
     def delete_missing_column(self, threshold: int = 1, threshold_pct: float = None, file_name: str = None) -> None:
