@@ -2,121 +2,15 @@
 ├── data
 │   └── house-prices.csv
 ├── docs
-│   ├── build
-│   │   ├── doctrees
-│   │   │   ├── autoapi
-│   │   │   │   ├── index.doctree
-│   │   │   │   ├── lib
-│   │   │   │   │   ├── index.doctree
-│   │   │   │   │   ├── preprocessor
-│   │   │   │   │   │   └── index.doctree
-│   │   │   │   │   ├── stack
-│   │   │   │   │   │   └── index.doctree
-│   │   │   │   │   └── xfix
-│   │   │   │   │       └── index.doctree
-│   │   │   │   └── preprocess
-│   │   │   │       └── index.doctree
-│   │   │   ├── environment.pickle
-│   │   │   └── index.doctree
-│   │   └── html
-│   │       ├── autoapi
-│   │       │   ├── index.html
-│   │       │   ├── lib
-│   │       │   │   ├── index.html
-│   │       │   │   ├── preprocessor
-│   │       │   │   │   └── index.html
-│   │       │   │   ├── stack
-│   │       │   │   │   └── index.html
-│   │       │   │   └── xfix
-│   │       │   │       └── index.html
-│   │       │   └── preprocess
-│   │       │       └── index.html
-│   │       ├── genindex.html
-│   │       ├── index.html
-│   │       ├── objects.inv
-│   │       ├── py-modindex.html
-│   │       ├── search.html
-│   │       ├── searchindex.js
-│   │       ├── _sources
-│   │       │   ├── autoapi
-│   │       │   │   ├── index.rst.txt
-│   │       │   │   ├── lib
-│   │       │   │   │   ├── index.rst.txt
-│   │       │   │   │   ├── preprocessor
-│   │       │   │   │   │   └── index.rst.txt
-│   │       │   │   │   ├── stack
-│   │       │   │   │   │   └── index.rst.txt
-│   │       │   │   │   └── xfix
-│   │       │   │   │       └── index.rst.txt
-│   │       │   │   └── preprocess
-│   │       │   │       └── index.rst.txt
-│   │       │   └── index.rst.txt
-│   │       └── _static
-│   │           ├── alabaster.css
-│   │           ├── basic.css
-│   │           ├── css
-│   │           │   ├── badge_only.css
-│   │           │   ├── fonts
-│   │           │   │   ├── fontawesome-webfont.eot
-│   │           │   │   ├── fontawesome-webfont.svg
-│   │           │   │   ├── fontawesome-webfont.ttf
-│   │           │   │   ├── fontawesome-webfont.woff
-│   │           │   │   ├── fontawesome-webfont.woff2
-│   │           │   │   ├── lato-bold-italic.woff
-│   │           │   │   ├── lato-bold-italic.woff2
-│   │           │   │   ├── lato-bold.woff
-│   │           │   │   ├── lato-bold.woff2
-│   │           │   │   ├── lato-normal-italic.woff
-│   │           │   │   ├── lato-normal-italic.woff2
-│   │           │   │   ├── lato-normal.woff
-│   │           │   │   ├── lato-normal.woff2
-│   │           │   │   ├── Roboto-Slab-Bold.woff
-│   │           │   │   ├── Roboto-Slab-Bold.woff2
-│   │           │   │   ├── Roboto-Slab-Regular.woff
-│   │           │   │   └── Roboto-Slab-Regular.woff2
-│   │           │   └── theme.css
-│   │           ├── custom.css
-│   │           ├── doctools.js
-│   │           ├── documentation_options.js
-│   │           ├── file.png
-│   │           ├── graphviz.css
-│   │           ├── jquery-3.5.1.js
-│   │           ├── jquery.js
-│   │           ├── js
-│   │           │   ├── badge_only.js
-│   │           │   ├── html5shiv.min.js
-│   │           │   ├── html5shiv-printshiv.min.js
-│   │           │   └── theme.js
-│   │           ├── language_data.js
-│   │           ├── minus.png
-│   │           ├── plus.png
-│   │           ├── pygments.css
-│   │           ├── searchtools.js
-│   │           ├── underscore-1.13.1.js
-│   │           └── underscore.js
-│   ├── make.bat
-│   ├── Makefile
-│   ├── preprocessor-usage.md
-│   ├── report.docx
 │   ├── requirements.txt
-│   └── source
-│       ├── conf.py
-│       ├── index.rst
-│       ├── _static
-│       └── _templates
-├── README.md
+│   └── usage.md
 ├── src
 │   ├── lib
 │   │   ├── __init__.py
 │   │   ├── preprocessor.py
-│   │   ├── __pycache__
-│   │   │   ├── __init__.cpython-38.pyc
-│   │   │   ├── preprocessor.cpython-38.pyc
-│   │   │   ├── stack.cpython-38.pyc
-│   │   │   └── xfix.cpython-38.pyc
 │   │   ├── stack.py
 │   │   └── xfix.py
 │   └── preprocess.py
 └── tree.txt
 
-34 directories, 85 files
+4 directories, 9 files
