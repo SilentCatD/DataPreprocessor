@@ -33,8 +33,10 @@ python3 preprocess.py <option> -h
 ```
 Với `option` là tên hàm, ví dụ `python3 preprocess.py fill -h` để xem thông tin sử dụng hàm điền giá trị null và các flag liên quan
 Với từng câu lệnh trên, console cũng sẽ hiển thị các` flag` (`-flag`) có thể sử dụng và ý nghĩa liên quan, do hướng dẫn này đã khá chi tiết nên sẽ không nói lại chi tiết  ở đây, file này chỉ tập trung vào cách đạt được các yêu cầu trong đồ án.
+
 Tuy nhiên cần lưu ý tới flag `-f`, `--file` tượng trưng cho file đầu vào để xử lý,
 giá trị của flag này trong xuyên suốt file hướng dẫn sẽ được để cố định trỏ tới `../data/house-prices.csv`, trong thực tế sử dụng, trường này có thể là bất kì giá trị nào trên ổ cứng trỏ tới file dữ liệu
+
 Một số hàm cho phép gán biến file đầu ra `-o`, `--outfile`, flag này không bắt buộc, tuy nhiên nếu không cung cấp giá trị biến đầu ra nào, kết quả dữ liệu sau khi chạy hàm sẽ được lưu đè lên file đầu vào ở `-f`. Đây cũng là một điểm quan trọng cần lưu ý để tránh mất hoặc thay đổi dữ liệu, để bảo tồn file gốc ở đây sẽ luôn sử dụng flag này.
 ## Liệt kê thông tin về các dòng, cột bị thiếu dữ liệu
 ```
