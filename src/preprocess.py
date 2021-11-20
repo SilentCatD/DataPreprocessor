@@ -182,7 +182,7 @@ if __name__ == '__main__':
     # delete_duplicate_row(self, file_name: str = None) -> None
     delete_duplicate_parser = sub_parsers.add_parser("deldup", help="delete duplicate data")
     delete_duplicate_parser.add_argument('-t', '--type', choices=['row'],
-                                         help='choose the type of duplicate deletion, must be one of ["rows"]',
+                                         help='choose the type of duplicate deletion, must be one of ["row"]',
                                          metavar='', required=True)
     delete_duplicate_parser.add_argument("-o", "--outfile",
                                          help="set the name of the output file, if not specified, the current file "
