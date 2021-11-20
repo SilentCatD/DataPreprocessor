@@ -114,7 +114,17 @@ def normalization(norm_args):
 
 def attribute_calculation(calc_args):
     """ Handle attributes calculations on a NUMERIC attribute CLI interaction"""
-    pr
+    processor = DataPreprocessor(calc_args.file)
+    if calc_args.outfile:
+        if not calc_args.outfile.endswith('.csv'):
+            raise NameError("output filename must end with '.csv'")
+    processor.attributes_calculation(calc_str=calc_args.calc_string, col_name=calc_args.attribute_name,
+                                     file_name=calc_args.outfile)
+    if calc_args.outfile:
+        print(f"Saved to {calc_args.outfile}")
+    else:
+        print(f"Saved to {calc_args.file}")
+    print("done!")
 
 
 if __name__ == '__main__':
